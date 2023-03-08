@@ -74,3 +74,48 @@ in if d<>q then sign^(Int.toString (ap div d))^"/"^(Int.toString (aq div d))
 end;
 
 toString (10, 14);
+
+(* ezt  megírni hogy a kiiratasnal racionalis szamok olyan egesz parok legyenek, melyekre a szamlalo és a nevezo legnagyobb kozos osztoja 1*)
+
+fun downto1 0 = []
+  |downto1 n = n :: downto1(n-1);
+
+downto1 10;
+
+fun upto(k,n) = if k>n then [] else
+k::upto(k+1,n);
+
+upto (5, 10);
+
+fun uptoN n =
+let fun auxupto i = if i>n then [] else 
+i::auxupto (i+1)
+in auxupto 1
+end;
+
+uptoN 10;
+
+
+fun suml [] = 0 
+  |suml (x::xs) = x + suml xs;
+
+infix 5 @;
+
+fun [] @ ys = ys
+  |(x::xs)@ys = x::(xs@ys);
+
+fun naiveRev [] = []
+  |naiveRev (x::xs) = naiveRev xs @ [x];
+
+naiveRev[1,2,3];
+
+infix member;
+fun  x member [] = false 
+  | x member (y::ys) = x=y orelse x member 
+ys;
+
+3 member [1,2,3];
+
+(* fuggveny mely egy adott elem minden elofordulasa eltavolitja a listabol. *)
+(* irjunk fuggvenyt mely a többszörös előfordulasokbol egyet tart meg a listaban*)
+
