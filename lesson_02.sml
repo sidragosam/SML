@@ -134,3 +134,15 @@ even(11);
 fun lengthl nil = 0
   | lengthl (_::t) = 1 + lengthl t;
 
+fun naive_rev nil = nil
+  | naive_rev(h::t) = naive_rev t @ [h];
+
+naive_rev[1,2,3,4,5];
+
+local
+   fun helper (nil, a) = a
+    | helper (h::t, a) = helper (t, h::a)
+in 
+  fun rev' l = helper (l, nil)
+end;
+
