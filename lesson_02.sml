@@ -108,3 +108,29 @@ fun F(x,y,z) = G(x+1, y, z)
 and G(x,y,z) = if y<z then F(x, y, z)
 else H(x, x+y, z)
 and H(x, y, z) = if z>0 then F(x, y, z-x) else (x,y,z);
+
+
+(*Faktoriális*)
+fun helper(0, r:int) = r
+  | helper (n:int, r:int) = helper (n-1, n*r);
+
+fun csoda(n:int) = helper(n, 1);
+
+csoda 10;
+csoda 4;
+csoda 5;
+
+(*Páros, páratlan*)
+
+fun even 0 = true
+  | even n = odd(n-1)
+  and odd 0 = false
+  | odd n = even (n-1);
+
+even(10);
+even(11);
+
+(*Listahossz*)
+fun lengthl nil = 0
+  | lengthl (_::t) = 1 + lengthl t;
+
