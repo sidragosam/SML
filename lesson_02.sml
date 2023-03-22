@@ -134,10 +134,11 @@ even(11);
 fun lengthl nil = 0
   | lengthl (_::t) = 1 + lengthl t;
 
+(*Lista megfordítása két módszerrel*)
 fun naive_rev nil = nil
   | naive_rev(h::t) = naive_rev t @ [h];
 
-naive_rev[1,2,3,4,5];
+naive_rev[1, 2, 3, 4, 5];
 
 local
    fun helper (nil, a) = a
@@ -145,4 +146,6 @@ local
 in 
   fun rev' l = helper (l, nil)
 end;
+
+rev' [1, 2, 3, 4, 5];
 
