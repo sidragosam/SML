@@ -34,3 +34,20 @@ in
 end;
 
 depth tree1;
+
+(*építsünk fel egy n mélységű teljes fát (ahol minden csúcsnak pontosan két gyermeke van)*)
+fun fulltree n =
+let
+  fun ftree (_, 0) = L
+    | ftree (k, n) = N(k, ftree(2*k, n-1), ftree(2*k+1, n-1))
+in
+  ftree(1, n)
+end;
+
+val fulltree1 = fulltree 3;
+
+(*HF:
+5. Írjunk egy függvényt, mely a fát tükrözi a gyökéren átmenő függőleges tengelyre.
+*)
+
+fun preorder t =
