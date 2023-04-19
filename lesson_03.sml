@@ -1,93 +1,104 @@
-(*infix jelölés*)
-datatype 'a tree = L | B of 'a tree * 'a tree;
+(*fun map f nil = nil
+  |map f (x::xr)= (f x):: (map f xr)*)
 
-(*prefix jelölés*)
-datatype 'a tree = L | N of 'a* 'a tree* 'a tree;
+map (fn x => x+1) [1,2,3];
 
-(*fa csomópontjainak száma*)
-fun nodes L = 0
-  | nodes (N(_, t1, t2))  = 1 + nodes t1 + nodes t2;
+val minus5 = fn x => x-5;
 
-val tree1 = N(3, N(5, N(1, L, L), L), N(10, L, L));
+map minus5 [~2, 1, 0, 1, 2];
 
-nodes tree1;
+map rev [[1,2,3], [4,5,6]];
 
-(*HF:
-1. Írjunk fel egy olyan fa adattípust, melyben a levelekben vannak egész szám elemek, a csómopontok "üresek".
-2. Írjunk fel egy olyan fa adattípust, melyben a csomópontok és a levelek egyaránt egészek, a levelek lehetnek üres típusúak, azaz egy tetszőleges nullváltozós adatkonstruktor.
-3. Adjuk meg a nodes függvényt ezekre a különböző adattípusokra.
-4. Írjuk fel a nodes egy tail recursive változatát.
+List.filter (fn x => (x >=0)) [1, ~1, 2, ~2, 0];
+
+fun filter f nill = nill
+  | filter p (x::xs) = if (p x) then x:: 
+(filter p xs) else (filter p xs);  
+
+filter (fn x => x mod 2 =0) [0,1,2,3,4,5];
+
+filter (fn x => true) [true andalso false];
+
+filter (fn x => true) [true andalso false, 3+2 >= 1];
+
+(*miért értékeli ki a kifejezéseket a fentisorban*)
+
+fun exists f nill = false
+  |exists f (x::xr) = (f x) orelse exists f xr;
+
+fun all f nil = true
+  | all f (x::xs) = (f x) andalso all f xs;
+
+(* írjuk fel az  all predikátummal azt, hogy egy szám prímszám.*)
+(* ugyanez az exist predikatummal*)
+
+fun foldl f s nil = s 
+  | foldl f s (x::xs) = foldl f (f(x,s))
+xs;
+
+foldl op+ 0 [1,2,3,4,5];
+
+foldl (fn (x,y) => x +1) 0 [1,2,3,4,5];
+
+fun foldr f s nil = s 
+  | foldr f s (x::xs) =  f(x, foldr f s xs);
+
+fun revl xs = foldl op:: []xs;
+
+revl [1,2,3,4,5];
+
+fun newl xs = foldr op:: [] xs;
+
+newl [1,2,3,4,5];
+
+(*
+1. append operatort írjunk fel a foldr segítségével
+2. irjunk egy revapp operatort, mely az első argumentum megfordításával fűzi össze a masodik argumentummal
+3. irjunk egy foldl-el a lista elemeit osszeszorzo fuggvenyt.
+4. irjunk egy memb: 'a -> ('a list) -> bollean függvényt, mely eldönti, hogy az elem benne van-e a listában.
+5. count : 'a -> (a' list) -> int függvény, mely egy adott elem elorodulasai szamat adja vissza
+6. adjuk me egy szam decimalis feldonbatast, azaz 7896 -> [7,8,9,6]
+*)
+(*
+7. adjuk meg ennek a fordítottját, inverzfuggvenyet  [7,8,9,6] ->  7896
+8. irjuk fel a foldl-t a foldr segítségével.
+menete:
+a, írjuk fel az appendet a foldr-rel.
+b, adjuk meg a rev operatort  append es foldr segítségével
+c, adjuk meg a foldl-t a foldr es a rev segítségével
+d, adjuk meg a foldlt csak a foldr-rel
 *)
 
-(*fa mélysége*)
-fun depth' L = 0
-  | depth' (N(_, t1, t2)) = 1 + Int.max(depth' t1, depth' t2);
 
-depth' tree1;
+fun null nil = true
+  |null (x::xr) = false;
 
-(*fa mélység tail rekurzív változata*)
-fun depth t =
-  let fun depth0 (L, d) = d
-    | depth0 (N(_, t1, t2), d) = Int.max(depth0 (t1, d+1), depth0 (t2, d+1))
-in
-  depth0(t, 0)
-end;
 
-depth tree1;
+fun nth(xs,n) = if n<0 orelse null xs then
+raise Subscript
+else if n= 0 then hd xs else nth(tl xs, n-1);
 
-(*építsünk fel egy n mélységű teljes fát (ahol minden csúcsnak pontosan két gyermeke van)*)
-fun fulltree n =
-let
-  fun ftree (_, 0) = L
-    | ftree (k, n) = N(k, ftree(2*k, n-1), ftree(2*k+1, n-1))
-in
-  ftree(1, n)
-end;
+nth ([1,2,3,4,5], 3);
 
-val fulltree1 = fulltree 3;
+(* nth ([1,2,3,4,5], 10); *)
 
-(*HF:
-5. Írjunk egy függvényt, mely a fát tükrözi a gyökéren átmenő függőleges tengelyre.
+(*
+adjuk meg egy last: 'a list -> 'a függvényt, mely a lista utolso elemét adja vissza, egyébként az Empty nevű kivételt generálja
+2. keressük meg a foldl segítségével egy lista legnagyobb elemét, azaz a maxlist: 'a list -> 'a
+3. take(xs, n): a lista elso eleme, ahol a lista nullaval szamozodik, han<0 vagy |xs | <n akkor subscript kivételt generálja
+4. drop(xs, n) a lista , kivéve az első n elemét ahol a lista a nullaval szamozodik , ha n<0 vagy |xs | <n akkor a sbuscript kivételt generálja
 *)
 
-fun preorder t = case t of
-                L => []
-  | N(v, t1, t2) => v::(preorder t1 @ preorder t2);
+List.take([1,2,3],2);
+List.drop([1,2,3],2);
 
-preorder tree1;
+explode ("hello bazdmeg");
+implode ([#"R",#"A",#"K"]);
 
-(*1. inorder
-2. preorder*)
-
-fun preord (L, vs) = vs
-  | preord(N(v, t1, t2), vs) = v::preord (t1, preord(t2, vs));
-
-preord (tree1, []);
-
-(*HF:
-6. Tail recursive módon írjuk fel az inord és postord függvényeket.
-*)
-
-
-(*HF:
-7. Írjuk fel ezeket a függvényekett hd és t1 használata nélkül
-*)
-fun take (n, l) = if n = 0 then [] else hd l::take(n-1, tl l);
-
-fun drop (n, l) = if n = 0 then l else drop (n-1, tl l);
-
-take(3, [1, 2, 3, 4, 5]);
-drop(2, [1, 2, 3, 4, 5]);
-
-(*preorder bejárású, majdnem kiegyensúlyozott fa (leghosszabb és legrövidebb ágai hosszainak különbsége legfeljebb egy)*)
-fun preorderfa (x::xs) =
-let val k = length xs div 2
-in
-  N(x, preorderfa(take(k, xs)), preorderfa(drop(k, xs)))
-end
-  | preorderfa[] = L;
-
-preorderfa [1, 2, 3, 4, 5, 6];
-(*HF:
-8. Írjunk olyan takedrop függvényt, hogy a takedrop(k, xs) listapárt ad vissza anélkül, hogy megírnánk külön a take vagy a drop függvényeket.
+(*
+1. irjunk egy függvényt mely egy sztring hosszat adja meg
+2 irjunk egy sztringeket megfordító függvényt
+3. irjunk egy sztringeket osszehasonlito fuggvenyt.
+4. isDigit: char -> bool, ellenőrzi, hogy egy adott karakter számjegy-e
+5. ToInt string -> int, toInt "123" = 123.
 *)
