@@ -19,3 +19,18 @@ nodes tree1;
 4. Írjuk fel a nodes egy tail recursive változatát.
 *)
 
+(*fa mélysége*)
+fun depth' L = 0
+  | depth' (N(_, t1, t2)) = 1 + Int.max(depth' t1, depth' t2);
+
+depth' tree1;
+
+(*fa mélység tail rekurzív változata*)
+fun depth t =
+  let fun depth0 (L, d) = d
+    | depth0 (N(_, t1, t2), d) = Int.max(depth0 (t1, d+1), depth0 (t2, d+1))
+in
+  depth0(t, 0)
+end;
+
+depth tree1;
