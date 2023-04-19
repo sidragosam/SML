@@ -50,4 +50,62 @@ val fulltree1 = fulltree 3;
 5. Írjunk egy függvényt, mely a fát tükrözi a gyökéren átmenő függőleges tengelyre.
 *)
 
-fun preorder t =
+fun preorder t = case t of
+                L => []
+  | N(v, t1, t2) => v::(preorder t1 @ preorder t2);
+
+preorder tree1;
+
+(*1. inorder
+2. preorder*)
+
+fun preord (L, vs) = vs
+  | preord(N(v, t1, t2), vs) = v::preord (t1, preord(t2, vs));
+
+preord (tree1, []);
+
+(*HF:
+6. Tail recursive módon írjuk fel az inord és postord függvényeket.
+*)
+
+
+(*HF:
+7. Írjuk fel ezeket a függvényekett hd és t1 használata nélkül
+*)
+fun take (n, l) = if n = 0 then [] else hd l::take(n-1, tl l);
+
+fun drop (n, l) = if n = 0 then l else drop (n-1, tl l);
+
+take(3, [1, 2, 3, 4, 5]);
+drop(2, [1, 2, 3, 4, 5]);
+
+(*preorder bejárású, majdnem kiegyensúlyozott fa (leghosszabb és legrövidebb ágai hosszainak különbsége legfeljebb egy)*)
+fun preorderfa (x::xs) =
+let val k = length xs div 2
+in
+  N(x, preorderfa(take(k, xs)), preorderfa(drop(k, xs)))
+end
+  | preorderfa[] = L;
+
+preorderfa [1, 2, 3, 4, 5, 6];
+(*HF:
+8. Írjunk olyan takedrop függvényt, hogy a takedrop(k, xs) listapárt ad vissza, melynek első tagja az xs lista első k eleme, második tagja a maradék lista. (anélkül, hogy megírnánk külön a take vagy a drop függvényeket).
+9. Fejlesszük tovább úgy, hogy egyszer kapja meg argumentumként a lista hosszat, ne kelljen minden hívás során azt újraszámolni.
+*)
+
+(*keresőfa*)
+exception BSimple of int
+
+fun binSimple (L, b) = N(b, L, L)
+  | binSimple (N(a, t1, t2), b) =
+if b < a then N(a, binSimple(t1, b), t2)
+else if a < b then N(a, t1, binSimple(t2, b))
+else raise BSimple(b);
+
+(*a fát különböző elemekből építjük így fel*)
+
+(*HF:
+10. Módosítsuk a programot, hogy a fában egyenlő elemtípust is megengedhessünk.
+11. Írjunk egy listtoTree eljárást, mely adott listából bináris keresőfát épít.
+12. Írjunk balancedTree eljárást, mely majdnem kieggyensúlyozott fát épít a listából.
+*)
